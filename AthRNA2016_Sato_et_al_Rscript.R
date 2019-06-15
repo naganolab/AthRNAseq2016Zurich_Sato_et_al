@@ -303,3 +303,36 @@ reg = lm(lm(log(d[,1]+1,2)~d$Line)$resid~log(d$Ps+d$Pa + 1, 2))
 abline(a=reg$coefficients[1], b=reg$coefficients[2])
 
 #-----------------------------------------------------------------------
+
+#Figure S1: Comparison with Chan et al. (2010) GSL data-----------------
+
+d.gls = read.csv("Chan2010GWAS_averageGLS.csv", header=T)
+
+#AOP3, AT4G03050; 3 OH-propyl
+gene.id = "AT4G03050"
+d = cbind(rpm[gene.id,],primerID)
+
+mean.rpm = aggregate(log(d[,1]+1,2)~Line,data=d,mean)
+mean.rpm = mean.rpm[which(mean.rpm[,1]!="gl1-1"&mean.rpm[,1]!="gl1-2"),] #excl. gl1 mutants
+
+gls.line=c()
+for(i in mean.rpm[,1]) {
+  gls.line = rbind(gls.line, subset(d.gls, Accession==i))
+}
+
+cor.test(log(gls.line[,2]+10^-2,2),mean.rpm[,2])
+plot(log(gls.line[,2]+10^-2,2),mean.rpm[,2], las=1, pch=16)
+
+
+#AOP2, AT4G03060: Alkenyl
+gene.id = "AT4G03060"
+d = cbind(rpm[gene.id,],primerID)
+
+mean.rpm = aggregate(log(d[,1]+1,2)~Line,data=d,mean)
+mean.rpm = mean.rpm[which(mean.rpm[,1]!="gl1-1"&mean.rpm[,1]!="gl1-2"),] #excl. gl1 mutants
+
+cor.test(log(gls.line[,8]+10^-2,2),mean.rpm[,2])
+plot(log(gls.line[,8]+10^-2,2),mean.rpm[,2],las=1)
+
+#----------------------------------------------------------------
+
